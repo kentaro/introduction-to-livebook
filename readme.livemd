@@ -2,17 +2,15 @@
 
 ## はじめに
 
-このlivebookは、[K-Ruby#27](https://k-ruby.connpass.com/event/229214/)というミートアップでLivebookを紹介するために作られたものです。
+[![Run in Livebook](https://livebook.dev/badge/v1/black.svg)](https://livebook.dev/run?url=https%3A%2F%2Fraw.githubusercontent.com%2Fkentaro%2Fintroduction-to-livebook%2Fmain%2Freadme.livemd)
 
----
+このlivebookは、[K-Ruby#27](https://k-ruby.connpass.com/event/229214/)というミートアップでLivebookを紹介するために作られたものです。
 
 ## Livebookとは何か
 
 [Livebook](https://livebook.dev/)とは、Elixir版の[JupyterLab](https://jupyter.org/)のようなものです。
 
 **今あなたが目にしているのが、Livebookです！**
-
----
 
 ## 早速動かしてみる
 
@@ -41,9 +39,13 @@ end
 1..30 |> Enum.map(&FizzBuzz.fizz_buzz/1)
 ```
 
----
+```output
+["1", "2", "Fizz", "4", "Buzz", "Fizz", "7", "8", "Fizz", "Buzz", "11", "Fizz", "13", "14",
+ "Fizz Buzz", "16", "17", "Fizz", "19", "Buzz", "Fizz", "22", "23", "Fizz", "Buzz", "26", "Fizz",
+ "28", "29", "Fizz Buzz"]
+```
 
-## 最近のElixir
+## 最近のElixirの流れ
 
 2021年は、機械学習系のライブラリがどんどん充実しました。
 
@@ -54,16 +56,7 @@ end
 
 Livebookも、その流れで出てきたものです。
 
-![](images/nx-github-screenshot.png)
-[Numerical Elixir (Nx)](https://github.com/elixir-nx)
-
----
-
-<!-- livebook:{"break_markdown":true} -->
-
----
-
-## Livebookのはじめかた
+## Livebookの始め方
 
 このトークを聞いている間に、今すぐ使い始めよう！！1
 
@@ -88,11 +81,70 @@ $ mix escript.install hex livebook
 $ livebook server
 ```
 
----
+## Livebookの使い方
 
-## Section
+ノートブック自体の使い方は`？`を押すとヘルプが出てくるので、それを見てなんかいい感じに。JupyterLabに慣れていれば、すぐに使い始められるでしょう。
 
-## Section
+その他いろいろな使い方について、画面上でデモしながら説明します。
+
+## 依存モジュールのインストール
+
+Livebookがすごいのは、依存モジュールを動的に入れられるところです。Elixir 1.12で追加された`Mix.install/2`という関数で実行できます。詳しい話は「[Elixir 1.12で追加されたMix.install/2の使い道](https://zenn.dev/kentarok/articles/ab4bd0c7b6da1f)」に書いたのでご覧ください。
+
+というわけで、グラフを表示するためのライブラリを入れてみます。
+
+```elixir
+Mix.install([
+  {:vega_lite, "~> 0.1.2"},
+  {:kino, "~> 0.3.0"}
+])
+```
+
+```output
+Resolving Hex dependencies...
+Dependency resolution completed:
+New:
+  kino 0.3.1
+  vega_lite 0.1.2
+* Getting vega_lite (Hex package)
+* Getting kino (Hex package)
+==> vega_lite
+Compiling 5 files (.ex)
+Generated vega_lite app
+==> kino
+Compiling 14 files (.ex)
+Generated kino app
+```
+
+```output
+:ok
+```
+
+## グラフを描画する
+
+上記でインストールしたライブラリを用いて、グラフを描画します。
+
+```elixir
+alias VegaLite, as: Vl
+
+Vl.new(width: 400, height: 400)
+|> Vl.data_from_series(iteration: 1..100, score: 1..100)
+|> Vl.mark(:line)
+|> Vl.encode_field(:x, "iteration", type: :quantitative)
+|> Vl.encode_field(:y, "score", type: :quantitative)
+```
+
+## 「生きている」ドキュメント
+
+このlivebookのファイルをexportしてGitHubリポジトリに置いてあります（[kentaro/introduction-to-livebook](https://github.com/kentaro/introduction-to-livebook)）。このように、livebookとしてドキュメントを書いておくと、バッジ経由で「生きている」ドキュメントを簡単に提供できます
+
+願わくば、誰でもフリーかつ安全に使えるLivebookの実行環境が提供されているともっと楽なんだけどなあ。
+
+![](https://i.gyazo.com/fd164d561a16e84eecd11e56012a8cae.png)
+
+## Elixirといえばノード間通信
+
+Elixirは、Erlang VM(BEAM)の上で動く言語です。そのため、分散Erlangネットワークプロトコルによって、ノード間通信ができるのが面白いところの一つです。
 
 ## Runtimeという仕組み
 
@@ -103,10 +155,12 @@ Livebookには、ランタイムという仕組みがあリます。左サイド
 * **Attached Node**: すでに起動している他のノードに接続し、そのコンテキストでコードを実行する
 * **Embedded**: 組込みデバイスなどノードを別途起動できない環境のために、Livebookが組み込まれたアプリケーションのコンテキストでコードを実行する（グローバルな環境を共有する）
 
-![](images/livebook-runtime.png)
+![](https://i.gyazo.com/582f426aecab6f698972b7a9e1582372.png)
 
----
-
-## Section
+## Runtimeの図解
 
 ![](https://docs.google.com/presentation/d/1yAtyEMOhkxo4MEFG7VXQN_wg7-RGC0kMzvY1flpO898/export/png?pageid=gfbad1cfc61_0_1)
+
+## おわりに
+
+Livebookはもちろん、Elixirはとても盛り上がってきているしめちゃ楽しいので、皆さんぜひやりましょう！！1
