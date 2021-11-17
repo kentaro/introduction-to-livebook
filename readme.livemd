@@ -1,0 +1,112 @@
+# Livebookの紹介
+
+## はじめに
+
+このlivebookは、[K-Ruby#27](https://k-ruby.connpass.com/event/229214/)というミートアップでLivebookを紹介するために作られたものです。
+
+---
+
+## Livebookとは何か
+
+[Livebook](https://livebook.dev/)とは、Elixir版の[JupyterLab](https://jupyter.org/)のようなものです。
+
+**今あなたが目にしているのが、Livebookです！**
+
+---
+
+## 早速動かしてみる
+
+```elixir
+defmodule FizzBuzz do
+  def fizz_buzz(n)
+      when is_integer(n) and rem(n, 15) == 0 do
+    "Fizz Buzz"
+  end
+
+  def fizz_buzz(n)
+      when is_integer(n) and rem(n, 5) == 0 do
+    "Buzz"
+  end
+
+  def fizz_buzz(n)
+      when is_integer(n) and rem(n, 3) == 0 do
+    "Fizz"
+  end
+
+  def fizz_buzz(n) when is_integer(n) do
+    Integer.to_string(n)
+  end
+end
+
+1..30 |> Enum.map(&FizzBuzz.fizz_buzz/1)
+```
+
+---
+
+## 最近のElixir
+
+2021年は、機械学習系のライブラリがどんどん充実しました。
+
+* Nx: テンソル計算（Pythonでいうnumpy）
+* Axon: ニューラルネットワークの構成（PythonでいうTensorflow等）
+* Explorer: データフレーム（Pythonでいうpandas）
+* Scidata:　さまざまなデータセット
+
+Livebookも、その流れで出てきたものです。
+
+![](images/nx-github-screenshot.png)
+[Numerical Elixir (Nx)](https://github.com/elixir-nx)
+
+---
+
+<!-- livebook:{"break_markdown":true} -->
+
+---
+
+## Livebookのはじめかた
+
+このトークを聞いている間に、今すぐ使い始めよう！！1
+
+### Paasを使う
+
+fly.ioというサービスですぐに使い始められます（[Livebook · Launch on Fly.io](https://fly.io/launch/livebook)）。このlivebookもfly.ioで動いています。
+
+### Dockerを使う
+
+公式でDockerイメージが用意されているので、すぐに使い始められます。
+
+```
+$ docker run -p 8080:8080 --pull always livebook/livebook
+```
+
+### Elixirで使う
+
+Elixirをすでに入れている環境なら、`mix`コマンド経由でも使い始められます。
+
+```
+$ mix escript.install hex livebook
+$ livebook server
+```
+
+---
+
+## Section
+
+## Section
+
+## Runtimeという仕組み
+
+Livebookには、ランタイムという仕組みがあリます。左サイドバーのRuntime settingsのアイコンから、設定画面を表示できます。
+
+* **Eilxir Standalone**: Livebook用に独立したElixirランタイム（ノード）を起動してコードを実行する
+* **Mix Standalone**: 上記と同じだが、mixプロジェクトを指定して依存ライブラリを読み込んだコンテキストでコードを実行する
+* **Attached Node**: すでに起動している他のノードに接続し、そのコンテキストでコードを実行する
+* **Embedded**: 組込みデバイスなどノードを別途起動できない環境のために、Livebookが組み込まれたアプリケーションのコンテキストでコードを実行する（グローバルな環境を共有する）
+
+![](images/livebook-runtime.png)
+
+---
+
+## Section
+
+![](https://docs.google.com/presentation/d/1yAtyEMOhkxo4MEFG7VXQN_wg7-RGC0kMzvY1flpO898/export/png?pageid=gfbad1cfc61_0_1)
